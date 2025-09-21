@@ -1,0 +1,49 @@
+Addition
+
+section .data
+    num1 db 5      ; first number
+    num2 db 7      ; second number
+    result db 0    ; to store the result
+    msg db "Result: ", 0
+    newline db 10,0
+
+section .bss
+    out resb 4     ; buffer for result string
+
+section .text
+    global _start
+
+_start:
+    ; load numbers into registers
+    mov al, [num1]
+    add al, [num2]
+    mov [result], al
+
+    ; convert result to ASCII (only works for 0–9 here)
+    add byte [result], '0'
+
+    ; write "Result: "
+    mov eax, 4        ; sys_write
+    mov ebx, 1        ; stdout
+    mov ecx, msg
+    mov edx, 8
+    int 0x80
+
+    ; write result digit
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, result
+    mov edx, 1
+    int 0x80
+
+    ; print newline
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, newline
+    mov edx, 1
+    int 0x80
+
+    ; exit
+    mov eax, 1        ; sys_exit
+    xor ebx, ebx
+    int 0x80
