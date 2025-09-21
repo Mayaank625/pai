@@ -1,0 +1,51 @@
+array addition
+section .data
+    arr db 1, 2, 3, 4    ; array elements
+    len equ 4            ; number of elements
+    sum db 0             ; store sum
+    msg db "Sum: ", 0
+    newline db 10,0
+
+section .text
+    global _start
+
+_start:
+    xor eax, eax         ; clear accumulator (EAX = 0)
+    mov ecx, len         ; counter = len
+    mov esi, arr         ; point to first element
+
+loop_start:
+    add al, [esi]        ; add arr[i] to AL
+    inc esi              ; move to next element
+    loop loop_start      ; decrement ECX, repeat until 0
+
+    mov [sum], al        ; store result
+
+    ; convert to ASCII (0–9 only)
+    add byte [sum], '0'
+
+    ; print "Sum: "
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, 5           ; length of "Sum: "
+    int 0x80
+
+    ; print result
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, sum
+    mov edx, 1
+    int 0x80
+
+    ; print newline
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, newline
+    mov edx, 1
+    int 0x80
+
+    ; exit
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
