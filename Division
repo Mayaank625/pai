@@ -1,0 +1,51 @@
+section .data
+    num1 db 8          ; dividend
+    num2 db 2          ; divisor
+    result db 0        ; will store quotient
+    msg db "Result: ", 0
+    newline db 10,0
+
+section .text
+    global _start
+
+_start:
+    ; load dividend into AL
+    mov al, [num1]
+    mov bl, [num2]
+
+    ; clear AH for division
+    xor ah, ah
+
+    ; divide AX by BL → quotient in AL, remainder in AH
+    div bl
+    mov [result], al
+
+    ; convert result (0–9) to ASCII
+    add byte [result], '0'
+
+    ; print "Result: "
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, 8
+    int 0x80
+
+    ; print result
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, result
+    mov edx, 1
+    int 0x80
+
+    ; print newline
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, newline
+    mov edx, 1
+    int 0x80
+
+    ; exit
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
+division
